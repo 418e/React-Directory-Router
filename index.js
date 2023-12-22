@@ -2,23 +2,64 @@ import fs from "fs";
 import path from "path";
 
 const pagesDirectory = path.join(process.cwd(), "/src/pages");
-const files = fs.readdirSync(pagesDirectory);
 
-const pages = files.map((file) => {
-  const route =
-    "/" +
-    file
-      .replace(".js", "")
-      .replace(".jsx", "")
-      .replace(".ts", "")
-      .replace(".tsx", "");
+function getFiles(dirPath) {
+  let files;
+  try {
+    files = fs.readdirSync(dirPath);
+  } catch (err) {
+    console.error(`Failed to read directory at ${dirPath}: ${err}`);
+    return [];
+  }
 
-  const fileContent = fs.readFileSync(path.join(pagesDirectory, file), "utf-8");
-  const match = fileContent.match(/function\s+([^\s(]+)/);
-  const componentName = match ? match[1] : null;
+  let filePaths = [];
+  files.forEach((file) => {
+    let fullPath = path.join(dirPath, file);
+    let isDirectory;
+    try {
+      isDirectory = fs.statSync(fullPath).isDirectory();
+    } catch (err) {
+      console.error(
+        `Failed to check if path is a directory at ${fullPath}: ${err}`
+      );
+      return;
+    }
+    if (isDirectory) {
+      filePaths = [...filePaths, ...getFiles(fullPath)];
+    } else {
+      filePaths.push(fullPath);
+    }
+  });
+  return filePaths;
+}
 
-  return { route, componentName };
-});
+const files = getFiles(pagesDirectory);
+
+const pages = files
+  .map((file) => {
+    let fileContent;
+    try {
+      fileContent = fs.readFileSync(file, "utf-8");
+    } catch (err) {
+      console.error(`Failed to read file at ${file}: ${err}`);
+      return null;
+    }
+
+    const relativePath = path.relative(pagesDirectory, file);
+    const route =
+      "/" +
+      relativePath
+        .replace(".js", "")
+        .replace(".jsx", "")
+        .replace(".ts", "")
+        .replace(".tsx", "");
+
+    const match = fileContent.match(/function\s+([^\s(]+)/);
+    const componentName = match ? match[1] : null;
+
+    return { route, componentName };
+  })
+  .filter(Boolean);
 
 Promise.all(pages).then((pages) => {
   const routes = pages.reduce((acc, page) => {
@@ -56,6 +97,6 @@ Promise.all(pages).then((pages) => {
 
   fs.writeFile("src/route.js", routerCode, (err) => {
     if (err) throw err;
-    console.log("The file has been saved!");
+    console.log("Routes have been generated!");
   });
 });
