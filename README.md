@@ -5,18 +5,26 @@ Directory based routing for React.js
 ## Installation
 
 ```
-npm i react-dir-router@latest
+npm i -g react-dir-router@latest
+```
+
+or
+
+```
+sudo npm i -g react-dir-router@latest
 ```
 
 Move your pages into the `src/pages` directory and name homepage file `index.js`(jsx,ts or tsx) and function `index()`.
 
-run:
+## Running
 
 ```
-node node_modules/react-dir-routes
+rdr init
+rdr route
 ```
 
-to generate `src/route.js` file which you can import in the root of your application and enjoy!
+`rdr init` - generates configuration file (soon)
+`rdr route` - generates routes
 
 ## Note
 
