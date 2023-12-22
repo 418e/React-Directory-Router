@@ -1,0 +1,21 @@
+{
+  "name": "react-dir-router",
+  "version": "1.0.1",
+  "description": "react directory router",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "react",
+    "router",
+    "directory",
+    "router"
+  ],
+  "author": "418e",
+  "license": "ISC",
+  "dependencies": {
+    "react": "^18.2.0"
+  }
+}
