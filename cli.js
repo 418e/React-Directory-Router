@@ -5,9 +5,7 @@ import { generateRoutes } from "./index.js";
 import fs from "fs";
 
 function init() {
-  const configCode = `
-    module.exports.rdr = {};
-  `;
+  const configCode = `module.exports.rdr = {};`;
   fs.writeFile("rdr.config.js", configCode, (err) => {
     if (err) throw err;
     console.log("Configuration file has been created!");

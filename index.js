@@ -1,9 +1,17 @@
 import fs from "fs";
 import path from "path";
 
-export function generateRoutes() {
-  const pagesDirectory = path.join(process.cwd(), "/src/pages");
+async function Configuration() {
+  const rdr_config = await import(path.join(process.cwd(), "/rdr.config.js"));
+  return {
+    pages_dir: rdr_config.default.rdr.pages_dir || "/src/pages",
+    route_file: rdr_config.default.rdr.route_file || "src/route.js",
+  };
+}
 
+export async function generateRoutes() {
+  const config = await Configuration();
+  const pagesDirectory = path.join(process.cwd(), config.pages_dir);
   function getFiles(dirPath) {
     let files;
     try {
@@ -73,9 +81,7 @@ export function generateRoutes() {
     import {Router} from "react-dir-router/router";
     ${Object.entries(routes)
       .map(
-        ([path, Component]) => `
-      import ${Component} from './pages${path === "/" ? "/index" : path}';
-    `
+        ([path, Component]) => `import ${Component} from './pages${path === "/" ? "/index" : path}';`
       )
       .join("\n")}
 
@@ -96,7 +102,7 @@ export function generateRoutes() {
     export default Route;
   `;
 
-    fs.writeFile("src/route.js", routerCode, (err) => {
+    fs.writeFile(config.route_file, routerCode, (err) => {
       if (err) throw err;
       console.log("Routes have been generated!");
     });
