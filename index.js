@@ -81,7 +81,8 @@ export async function generateRoutes() {
     import {Router} from "react-dir-router/router";
     ${Object.entries(routes)
       .map(
-        ([path, Component]) => `import ${Component} from './pages${path === "/" ? "/index" : path}';`
+        ([path, Component]) =>
+          `import ${Component} from './pages${path === "/" ? "/index" : path}';`
       )
       .join("\n")}
 
