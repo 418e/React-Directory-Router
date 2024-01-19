@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
-import Route from "./src/route";
 
-export { Route };
 export const Router = ({ routes }) => {
   const [currentPath, setCurrentPath] = useState(window.location.pathname);
   const [params, setParams] = useState({});
