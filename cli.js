@@ -38,7 +38,8 @@ yargs(hideBin(process.argv))
     },
     (argv) => {
       if (argv.watch) {
-        chokidar.watch(".").on("change", () => {
+        generateRoutes();
+        chokidar.watch("./src").on("change", () => {
           generateRoutes();
         });
       } else {

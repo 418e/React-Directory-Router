@@ -47,6 +47,7 @@ export default rdr;
 const rdr = {
   pages_dir: "/src/pages", // location of the pages
   route_file: "src/routes.js", // location of the generated routes
+  typescript: false, // enable typescript
 };
 export default rdr;
 ```
@@ -65,3 +66,20 @@ rdr route --watch
 ```
 
 This is useful during development when you want to see your changes reflected in the routes without having to manually run the `rdr route` command each time.
+
+## Dynamic Routing
+
+Dynamic routing is supported through the use of placeholders in route definitions. These placeholders, enclosed in square brackets (`[]`), represent variable parts of the URL.
+
+For instance, a route like `/users/[id]` would match URLs like `/users/123`, with `123` being passed as a parameter to the corresponding component. To access params, you can use `useRouteParams` hooks:
+
+```jsx
+import { useRouteParams } from "react-dir-router";
+
+export default function User() {
+  const params = useRouteParams();
+  const id = params.id; // 123 in this example
+
+  // rest of the code
+}
+```

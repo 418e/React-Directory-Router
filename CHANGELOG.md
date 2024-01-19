@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 1.1.7 - 19/01/2024
+
+- added typescript support
+- added dynamic routing
+- new config field: `typescript: bool`
+- fixed `--watch`
+- fixed configuration
+
 ## 1.1.6 - 19/01/2024
 
 - added `--watch` feature
