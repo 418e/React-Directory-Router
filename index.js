@@ -2,10 +2,14 @@ import fs from "fs";
 import path from "path";
 
 async function Configuration() {
-  const rdr_config = await import(path.join(process.cwd(), "/rdr.config.js"));
+  const rdr_config = await import(
+    path.join(process.cwd(), "/rdr.config.js")
+  ).catch((e) => {
+    console.log(e);
+  });
   return {
-    pages_dir: rdr_config.default.rdr.pages_dir || "/src/pages",
-    route_file: rdr_config.default.rdr.route_file || "src/route.js",
+    pages_dir: rdr_config?.default?.rdr?.pages_dir || "/src/pages",
+    route_file: rdr_config?.default?.rdr?.route_file || "src/route.js",
   };
 }
 
@@ -76,9 +80,8 @@ export async function generateRoutes() {
       return acc;
     }, {});
 
-    const routerCode = `
-    import React from 'react';
-    import {Router} from "react-dir-router/router";
+    const routerCode = `import React from 'react';
+import {Router} from "react-dir-router/router";
     ${Object.entries(routes)
       .map(
         ([path, Component]) =>
@@ -89,23 +92,20 @@ export async function generateRoutes() {
     const routes = {
       ${Object.entries(routes)
         .map(
-          ([path, Component]) => `
-        "${
-          path.toLowerCase() === "/index" ? "/" : path.toLowerCase()
-        }": <${Component} />,
-      `
-        )
-        .join("\n")}
+          ([path, Component]) => 
+`"${
+path.toLowerCase() === "/index" ? "/" : path.toLowerCase()
+}": <${Component} />,`
+).join("\n")}
     };
 
     const Route = () => <Router routes={routes} />;
-
     export default Route;
   `;
 
-    fs.writeFile(config.route_file, routerCode, (err) => {
-      if (err) throw err;
-      console.log("Routes have been generated!");
-    });
+   fs.writeFile(config.route_file, routerCode, (err) => {
+     if (err) throw err;
+     console.log("🚀 Routes have been successfully generated!");
+   });
   });
 }
